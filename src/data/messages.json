@@ -1,0 +1,20 @@
+{
+  "login": {
+    "incorrectCredentials": "Your email or password is incorrect!"
+  },
+  "signup": {
+    "existingEmail": "Email Address already exist!",
+    "accountCreatedTitle": "Account Created!",
+    "accountCreatedBody": "Congratulations! Your new account has been successfully created!",
+    "accountCreatedInfo": "You can now take advantage of member privileges to enhance your online shopping experience with us."
+  },
+  "cart": {
+    "emptyCart": "Cart is empty!",
+    "addedTitle": "Added!",
+    "addedBody": "Your product has been added to cart."
+  },
+  "order": {
+    "placed": "Order Placed!",
+    "confirmation": "Congratulations! Your order has been confirmed!"
+  }
+}
