@@ -1,12 +1,15 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { AddedToCartModal } from "./AddedToCartModal";
 
+export type AddedProduct = { name: string; price: number };
+
 export class ProductsPage {
   readonly searchInput: Locator;
   readonly searchButton: Locator;
   readonly searchedHeading: Locator;
   readonly productCards: Locator;
   readonly addedModal: AddedToCartModal;
+  readonly cartInfoTable: Locator;
 
   constructor(private readonly page: Page) {
     this.searchInput = page.locator("#search_product");
@@ -16,6 +19,7 @@ export class ProductsPage {
     });
     this.productCards = page.locator(".features_items .product-image-wrapper");
     this.addedModal = new AddedToCartModal(page);
+    this.cartInfoTable = page.locator("#cart_info_table");
   }
 
   async open() {
@@ -38,9 +42,11 @@ export class ProductsPage {
     return name.trim();
   }
 
-  async addProductToCart(index = 0): Promise<string> {
+  async addProductToCart(index = 0): Promise<AddedProduct> {
     const card = this.productCards.nth(index);
     const name = (await card.locator(".productinfo p").innerText()).trim();
+    const priceText = await card.locator(".productinfo h2").innerText();
+    const price = Number(priceText.replace(/\D/g, ""));
 
     await card.hover();
     const addButton = card.locator(".product-overlay .add-to-cart");
@@ -48,10 +54,10 @@ export class ProductsPage {
     await addButton.click();
 
     await this.addedModal.waitUntilOpen();
-    return name;
+    return { name, price };
   }
 
-  async addFirstProductToCart(): Promise<string> {
+  async addFirstProductToCart(): Promise<AddedProduct> {
     return this.addProductToCart(0);
   }
 

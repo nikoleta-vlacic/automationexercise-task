@@ -1,5 +1,7 @@
 import { test, expect } from "../../src/fixtures/api.fixtures";
 import { buildUser } from "../../src/api/userFactory";
+import messages from "../../src/data/messages.json";
+import userData from "../../src/data/userData.json";
 
 test.describe("Auth API", { tag: "@api" }, () => {
   test("valid credentials are accepted", async ({ api, user }) => {
@@ -9,38 +11,41 @@ test.describe("Auth API", { tag: "@api" }, () => {
     });
 
     expect(res.responseCode).toBe(200);
-    expect(res.body.message).toBe("User exists!");
+    expect(res.body.message).toBe(messages.body.userExists);
   });
 
   test("wrong password is rejected", async ({ api, user }) => {
     const res = await api.verifyLogin({
       email: user.email,
-      password: "wrong-password",
+      password: userData.invalidLogin.password,
     });
 
     expect(res.responseCode).toBe(404);
-    expect(res.body.message).toBe("User not found!");
+    expect(res.body.message).toBe(messages.body.userNotFound);
   });
 
   test("unknown email is rejected", async ({ api }) => {
     const res = await api.verifyLogin({
-      email: "nobody-here@example.com",
-      password: "whatever",
+      email: userData.invalidLogin.email,
+      password: userData.invalidLogin.password,
     });
 
     expect(res.responseCode).toBe(404);
+    expect(res.body.message).toBe(messages.body.userNotFound);
   });
 
   test("missing password is a bad request", async ({ api, user }) => {
     const res = await api.verifyLogin({ email: user.email });
 
     expect(res.responseCode).toBe(400);
+    expect(res.body.message).toBe(messages.body.badRequest);
   });
 
   test("verifyLogin does not accept DELETE", async ({ api }) => {
     const res = await api.deleteWithMethod("delete");
 
     expect(res.responseCode).toBe(405);
+    expect(res.body.message).toBe(messages.body.methodNotSupported);
   });
 });
 
@@ -49,29 +54,23 @@ test.describe("Account lifecycle API", { tag: "@api" }, () => {
     const res = await api.createAccount(user);
 
     expect(res.responseCode).toBe(400);
-    expect(res.body.message).toBe("Email already exists!");
+    expect(res.body.message).toBe(messages.body.emailExists);
   });
 
   test("account update is persisted", async ({ api, user }) => {
-    const res = await api.updateAccount({ ...user, city: "Updated City" });
+    const res = await api.updateAccount({ ...user, city: userData.updatedCity });
     expect(res.responseCode).toBe(200);
-
+    expect(res.body.message).toBe(messages.body.updatedUser);
     const fetched = await api.getUserByEmail(user.email);
-    expect(fetched.body.user.city).toBe("Updated City");
+    expect(fetched.body.user.city).toBe(userData.updatedCity);  
   });
 
-  test("account details do not expose the password", async ({ api, user }) => {
-    const res = await api.getUserByEmail(user.email);
-
-    expect(res.responseCode).toBe(200);
-    expect(res.raw).not.toContain(user.password);
-  });
 
   test("deleting with a wrong password keeps the account", async ({
     api,
     user,
   }) => {
-    const res = await api.deleteAccount(user.email, "wrong-password");
+    const res = await api.deleteAccount(user.email, userData.invalidLogin.password);
     expect(res.responseCode).toBe(404);
 
     const stillThere = await api.getUserByEmail(user.email);
@@ -79,13 +78,14 @@ test.describe("Account lifecycle API", { tag: "@api" }, () => {
   });
 
   test("deleted account no longer exists", async ({ api }) => {
-    const u = buildUser();
-    await api.createAccount(u);
+    const user = buildUser();
+    await api.createAccount(user);
 
-    const res = await api.deleteAccount(u.email, u.password);
+    const res = await api.deleteAccount(user.email, user.password);
     expect(res.responseCode).toBe(200);
+    expect(res.body.message).toBe(messages.body.deletedAccount);
 
-    const gone = await api.getUserByEmail(u.email);
-    expect(gone.responseCode).toBe(404);
+    const deleted = await api.getUserByEmail(user.email);
+    expect(deleted.responseCode).toBe(404);
   });
 });

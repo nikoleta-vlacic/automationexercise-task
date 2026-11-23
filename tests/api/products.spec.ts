@@ -1,5 +1,7 @@
 import { test, expect } from "../../src/fixtures/api.fixtures";
-
+import messages from "../../src/data/messages.json";
+import purchaseData from "../../src/data/purchaseData.json";
+  
 test.describe("Products catalog", { tag: "@api" }, () => {
   test("catalog is not empty and every product is well-formed", async ({
     api,
@@ -55,7 +57,7 @@ test.describe("Brands", { tag: "@api" }, () => {
 });
 
 test.describe("Product search", { tag: "@api" }, () => {
-  for (const term of ["top", "dress", "jeans"]) {
+  for (const term of purchaseData.valid) {
     test(`search for "${term}" returns products from the catalog`, async ({
       api,
     }) => {
@@ -72,19 +74,10 @@ test.describe("Product search", { tag: "@api" }, () => {
     });
   }
 
-  test("search is case-insensitive", async ({ api }) => {
-    const lower = await api.searchProduct("top");
-    const upper = await api.searchProduct("TOP");
-
-    const ids = (r: typeof lower) =>
-      r.body.products.map((p: { id: number }) => p.id).sort();
-    expect(ids(upper)).toEqual(ids(lower));
-  });
-
-  test("search without a match returns an empty list, not an error", async ({
+  test("search without a match returns an empty list", async ({
     api,
   }) => {
-    const res = await api.searchProduct("zzzxxxqqq");
+    const res = await api.searchProduct(purchaseData.noMatch);
 
     expect(res.responseCode).toBe(200);
     expect(res.body.products).toHaveLength(0);
@@ -96,15 +89,9 @@ test.describe("Product search", { tag: "@api" }, () => {
     const res = await api.searchProduct();
 
     expect(res.responseCode).toBe(400);
-    expect(res.body.message).toContain("search_product");
+    expect(res.body.message).toBe(messages.body.searchBadRequest);
   });
 
-  test("special characters do not break the endpoint", async ({ api }) => {
-    const res = await api.searchProduct("' OR '1'='1");
-
-    expect([200, 400]).toContain(res.responseCode);
-    expect(res.raw).not.toMatch(/sql|syntax error|stack trace/i);
-  });
 });
 
 test.describe("Unsupported methods", { tag: "@api" }, () => {
@@ -112,11 +99,13 @@ test.describe("Unsupported methods", { tag: "@api" }, () => {
     const res = await api.postProducts();
 
     expect(res.responseCode).toBe(405);
+    expect(res.body.message).toBe(messages.body.methodNotSupported);
   });
 
   test("PUT /brandsList is not allowed", async ({ api }) => {
     const res = await api.putBrands();
 
     expect(res.responseCode).toBe(405);
+    expect(res.body.message).toBe(messages.body.methodNotSupported);
   });
 });

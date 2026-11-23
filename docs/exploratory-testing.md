@@ -19,8 +19,8 @@ form validation. - Account deletion and subsequent login.
   check quantity handling and total price calculations.
 - Removed products from the cart and verified whether the total amount
   was recalculated correctly.
-Focus: Boundary value validation, quantity handling, and calculation
-accuracy.
+  Focus: Boundary value validation, quantity handling, and calculation
+  accuracy.
 
 **Product Listing and Filters**
 
@@ -29,8 +29,8 @@ accuracy.
   number of products shown.
 - Tested category filters and verified whether the correct products
   were displayed.
-Focus: Filter functionality, data consistency, and product count
-accuracy.
+  Focus: Filter functionality, data consistency, and product count
+  accuracy.
 
 **Checkout**
 
@@ -41,8 +41,8 @@ accuracy.
 - Attempted to place an order without entering payment information.
 - Checked the navigation behavior when returning to the home page
   during the checkout process.
-Focus: Data consistency, input handling, checkout validation, and
-navigation.
+  Focus: Data consistency, input handling, checkout validation, and
+  navigation.
 
 **Payment**
 
@@ -50,7 +50,7 @@ navigation.
 - Tested invalid values for the expiry date and other payment fields.
 - Checked whether the payment form validated the entered information
   before allowing the purchase to proceed.
-Focus: Input validation, boundary values, and payment form behavior.
+  Focus: Input validation, boundary values, and payment form behavior.
 
 **Account Management**
 
@@ -58,10 +58,10 @@ Focus: Input validation, boundary values, and payment form behavior.
   account.
 - Attempted to log in again using the same credentials after account
   deletion.
-Focus: Account deletion permissions and authentication behavior
-after account removal.
+  Focus: Account deletion permissions and authentication behavior
+  after account removal.
 
-## Findings 
+## Findings
 
 **Observation**: No Forgot Password or password recovery option is available on the login page.
 
@@ -108,7 +108,7 @@ checkout process and should be reviewed.
 - Product filters and displayed product counts should remain consistent.
 - Checkout information should always match the registered customer details.
 - The application should provide appropriate validation when attempting to place an order without payment information.
-  
+
 ## Conclusion
 
 The exploratory session focused on boundary conditions, invalid inputs,

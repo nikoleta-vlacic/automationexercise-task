@@ -16,5 +16,15 @@
   "order": {
     "placed": "Order Placed!",
     "confirmation": "Congratulations! Your order has been confirmed!"
+  },
+  "body": {
+    "userExists": "User exists!",
+    "userNotFound": "User not found!",
+    "emailExists": "Email already exists!",
+    "methodNotSupported": "This request method is not supported.",
+    "searchBadRequest": "Bad request, search_product parameter is missing in POST request.",
+    "badRequest": "Bad request, email or password parameter is missing in POST request.",
+    "deletedAccount": "Account deleted!",
+    "updatedUser": "User updated!"
   }
 }

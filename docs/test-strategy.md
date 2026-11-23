@@ -19,6 +19,7 @@ The system under test is a public, shared demo site that I do not own. That shap
 **Rule:** if a risk can be caught by calling the backend directly, it goes to the API suite. An E2E test earns its place only when the risk is in the integration between UI, session and a multi-step flow, or when the user-visible result is the point.
 
 **API tests cover:**
+
 - Account lifecycle: create, duplicate email rejected, update persisted, delete with a wrong password keeps the account, deleted account no longer exists.
 - Authentication: valid and invalid credentials, missing parameters, unsupported HTTP methods.
 - Data safety: account details do not expose the password.
@@ -26,6 +27,7 @@ The system under test is a public, shared demo site that I do not own. That shap
 - Search: matching, case-insensitivity, no-match returns an empty list, missing parameter is a bad request, special characters do not leak internal errors.
 
 **E2E tests cover:**
+
 - Registration through the UI, ending logged in, with the result confirmed through the API.
 - Login, wrong password, required-field validation, logout.
 - Product details match the listing.
@@ -37,6 +39,7 @@ Negative cases are deliberately not repeated in the UI when the API already cove
 ## 4. Risks, assumptions, constraints
 
 **Risks**
+
 - Registration or login failure blocks all users.
 - Wrong prices, quantities or totals in the cart.
 - Checkout failure or missing order confirmation.
@@ -44,16 +47,17 @@ Negative cases are deliberately not repeated in the UI when the API already cove
 - API clients that trust the HTTP status: this API reports many outcomes in the response body (`responseCode`) rather than in the HTTP status, so a client checking only the status can mistake a failure for success.
 
 **Assumptions**
+
 - The public site is shared and stateful: other people's data and traffic exist, and its behaviour can change without notice.
 - The published API documentation is the contract. Where behaviour differs from it, I record a finding rather than adjust the test to pass.
 - Payment is simulated, because the form accepted arbitrary card details.
 
 **Constraints**
+
 - No access to the backend, database or deployment, so test data is created and cleaned up only through the public API.
 - No design specifications, so no visual verification.
 - Chrome only.
 - The application server was occasionally overloaded or unavailable during testing, which sometimes affected test execution and application responsiveness.
-
 
 ## 5. Not covered, and why
 

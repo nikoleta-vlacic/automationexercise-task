@@ -1,5 +1,7 @@
 {
   "invalidLogin": {
+    "email": "invalid@example.com",
     "password": "Test1234"
-  }
+  },
+  "updatedCity": "Updated City"
 }

@@ -39,4 +39,7 @@ export class ProductDetailPage {
   async goToCart() {
     await this.addedModal.viewCart();
   }
+  async getName(): Promise<string> {
+  return (await this.name.innerText()).trim();
+}
 }

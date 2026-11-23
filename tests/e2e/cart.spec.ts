@@ -1,68 +1,55 @@
 import { test, expect } from "../../src/fixtures/e2e.fixtures";
-import { ProductsPage } from "../../src/pages/ProductsPage";
-import { ProductDetailPage } from "../../src/pages/ProductDetailPage";
-import { CartPage } from "../../src/pages/CartPage";
 
 test.describe("Cart", { tag: "@e2e" }, () => {
-  test("product added from the list appears in the cart", async ({ page }) => {
-    const products = new ProductsPage(page);
-    const cart = new CartPage(page);
+  test("product added from the list appears in the cart", async ({ productsPage, cartPage }) => {
+    
+    await productsPage.open();
+    const product = await productsPage.addProductToCart(0);
+    await productsPage.addedModal.expectMessage();
+    await productsPage.goToCart();
 
-    await products.open();
-    const name = await products.addProductToCart(0);
-    await products.addedModal.expectMessage();
-    await products.goToCart();
-
-    await expect(cart.rows).toHaveCount(1);
-    await cart.expectProduct(name, 1);
+    await expect(cartPage.rows).toHaveCount(1);
+    await cartPage.expectProduct(product.name, 1);
   });
 
-  test("two different products are both in the cart with correct totals", async ({
-    page,
+  test("two different products are both in the cart", async ({
+    productsPage, cartPage
   }) => {
-    const products = new ProductsPage(page);
-    const cart = new CartPage(page);
+   
+    await productsPage.open();
+    const first = await productsPage.addProductToCart(0);
+    await productsPage.continueShopping();
+    const second = await productsPage.addProductToCart(1);
+    await productsPage.goToCart();
 
-    await products.open();
-    const first = await products.addProductToCart(0);
-    await products.continueShopping();
-    const second = await products.addProductToCart(1);
-    await products.goToCart();
-
-    expect(first).not.toBe(second);
-    await expect(cart.rows).toHaveCount(2);
-    await cart.expectProduct(first, 1);
-    await cart.expectProduct(second, 1);
+    expect(first.name).not.toBe(second.name);
+    await expect(cartPage.rows).toHaveCount(2);
+    await cartPage.expectProduct(first.name, 1);
+    await cartPage.expectProduct(second.name, 1);
   });
 
   test("quantity chosen on the product page is reflected in the cart", async ({
-    page,
+    productsPage, productDetailPage, cartPage
   }) => {
-    const products = new ProductsPage(page);
-    const details = new ProductDetailPage(page);
-    const cart = new CartPage(page);
+    
+    const quantity = 3;
+    await productsPage.open();
+    await productsPage.openFirstProductDetails();
+    const name = await productDetailPage.getName();
 
-    await products.open();
-    await products.openFirstProductDetails();
-    const name = (await details.name.innerText()).trim();
+    await productDetailPage.addToCart(quantity);
+    await productDetailPage.goToCart();
 
-    await details.addToCart(3);
-    await details.goToCart();
-
-    await cart.expectProduct(name, 3);
+    await cartPage.expectProduct(name, quantity);
   });
 
-  test("removing the only product empties the cart", async ({ page }) => {
-    const products = new ProductsPage(page);
-    const cart = new CartPage(page);
-
-    await products.open();
-    const name = await products.addProductToCart(0);
-    await products.goToCart();
-    await cart.expectProduct(name, 1);
-
-    await cart.removeOnlyProduct(name);
-
-    await cart.expectEmpty();
+  test("removing the only product empties the cart", async ({ productsPage, cartPage }) => {
+    
+    await productsPage.open();
+    const product = await productsPage.addProductToCart(0);
+    await productsPage.goToCart();
+    await cartPage.expectProduct(product.name, 1);
+    await cartPage.removeOnlyProduct(product.name);
+    await cartPage.expectEmpty();
   });
 });

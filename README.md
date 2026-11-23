@@ -32,13 +32,13 @@ Notable settings in `playwright.config.ts`:
 
 ## Running the tests
 
-| Command | Description |
-|---|---|
-| `npm test` | Runs the full suite (API and E2E) |
-| `npm run test:api` | Runs tests tagged `@api` |
-| `npm run test:e2e` | Runs tests tagged `@e2e` |
-| `npm run lint` | Type-checks the project (`tsc --noEmit`) |
-| `npm run report` | Opens the latest HTML report |
+| Command            | Description                              |
+| ------------------ | ---------------------------------------- |
+| `npm test`         | Runs the full suite (API and E2E)        |
+| `npm run test:api` | Runs tests tagged `@api`                 |
+| `npm run test:e2e` | Runs tests tagged `@e2e`                 |
+| `npm run lint`     | Type-checks the project (`tsc --noEmit`) |
+| `npm run report`   | Opens the latest HTML report             |
 
 ## Test tagging
 
@@ -86,4 +86,3 @@ Further details:
 - Separate parallel CI jobs for API and E2E tests, with sharding if the suite grows
 - Scheduled (nightly) runs and failure notifications
 - ESLint with `eslint-plugin-playwright`, formatting and pre-commit hooks
-
