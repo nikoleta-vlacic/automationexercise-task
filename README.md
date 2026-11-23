@@ -1,4 +1,4 @@
-# Sokin Task – Playwright Test Suite
+# Automationexercise Task – Playwright Test Suite
 
 Automated API and end-to-end tests for [automationexercise.com](https://automationexercise.com), implemented with Playwright and TypeScript. The suite consists of 35 tests, categorised by tags and executed automatically in GitHub Actions on every push and pull request.
 
